@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_FI040_SCR</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZEA_FI040_SCR</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include YE00_EX001_SCR</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          YE00_EX001_SCR</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+SELECTION-SCREEN SKIP 1. "Selection Screen에서 1줄 건너띄기
+
+<font color ="#0000FF">*TEXT-T01 : G/L Account Balance Display</font>
+SELECTION-SCREEN BEGIN OF BLOCK B01 WITH FRAME TITLE TEXT-T01.
+
+  SELECT-OPTIONS:
+    SO_SAKNR FOR GS_ALL-SAKNR NO-EXTENSION. " G/L Code
+  PARAMETERS:
+    PA_BUKRS TYPE ZEA_BUKRS, " 회사코드 (1000번)
+    PA_GJAHR TYPE ZEA_GJAHR. " 회계연도
+
+SELECTION-SCREEN END OF BLOCK B01.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

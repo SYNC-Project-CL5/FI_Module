@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_FI_AUTO_POSINT_PL</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZEA_FI_AUTO_POSINT_PL</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  [FI/Macro] 손익계산서 전표 자동발행 [완료] ACA5-08 김예리</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Report ZEA_FI_AUTO_POSINT_PL</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+REPORT ZEA_FI_AUTO_POSINT_PL.
+
+include <a href ="zea_fi_auto_posint_pl_top.html">ZEA_FI_AUTO_POSINT_PL_TOP</a>.
+include <a href ="zea_fi_auto_posint_pl_f01.html">ZEA_FI_AUTO_POSINT_PL_F01</a>.
+
+<font color ="#0000FF">*WRITE: GV_BELNR_NUMBER." 채번 확인 완료</font>
+
+
+INITIALIZATION.
+  PERFORM SALES.   " 매출원가/매출
+  PERFORM SALARY.  " 급여
+  PERFORM EXPENSE. " 판관비
+
+
+<font color ="#0000FF">*Messages</font>
+<font color ="#0000FF">*----------------------------------------------------------</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">* Message class: Hard coded</font>
+<font color ="#0000FF">*   번 전표가 생성되었습니다.</font>
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

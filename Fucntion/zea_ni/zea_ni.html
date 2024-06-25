@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_NI</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for function: ZEA_NI</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  당기순이익 Exporting을 위한 함수</b></font>
+<hr>
+<pre width="100">
+FUNCTION ZEA_NI.
+<font color ="#0000FF">*"----------------------------------------------------------------------</font>
+<font color ="#0000FF">*"*"Local Interface:</font>
+<font color ="#0000FF">*"  EXPORTING</font>
+<font color ="#0000FF">*"     REFERENCE(EV_INCOME) TYPE  ZEA_BSEG-DMBTR</font>
+<font color ="#0000FF">*"---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*  Range 변수</font>
+<font color ="#0000FF">*"---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*  " 매출 : 4로 시작</font>
+
+<font color ="#0000FF">*       <a href ="global-zea_ni.html">Global data declarations</a></font>
+  R_SAKNR_4-SIGN   = 'I'.
+  R_SAKNR_4-OPTION = 'CP'.
+  R_SAKNR_4-LOW = '4*'.
+  APPEND R_SAKNR_4.
+
+  " 매출원가: 5로 시작
+  R_SAKNR_5-SIGN   = 'I'.
+  R_SAKNR_5-OPTION = 'CP'.
+  R_SAKNR_5-LOW = '5*'.
+  APPEND R_SAKNR_5.
+
+  " 판관비 : 6로 시작
+  R_SAKNR_6-SIGN   = 'I'.
+  R_SAKNR_6-OPTION = 'CP'.
+  R_SAKNR_6-LOW = '6*'.
+  APPEND R_SAKNR_6.
+
+  " 영업외수익 : 71로 시작, 73으로 시작, 75로 시작
+  R_SAKNR_7P-SIGN   = 'I'.
+  R_SAKNR_7P-OPTION = 'CP'.
+  R_SAKNR_7P-LOW = '71*'.
+  R_SAKNR_7P-HIGH = '73*'.
+  APPEND R_SAKNR_7P.
+
+  " 영업외비용 : 72, 74, 79로 시작
+  R_SAKNR_7L-SIGN   = 'I'.
+  R_SAKNR_7L-OPTION = 'CP'.
+  R_SAKNR_7L-LOW = '74*'.
+  R_SAKNR_7L-HIGH = '79*'.
+  APPEND R_SAKNR_7L.
+
+<font color ="#0000FF">*"---------------------------------------------------------------------*</font>
+<font color ="#0000FF">* 손익계정 ( ALL)</font>
+<font color ="#0000FF">*"---------------------------------------------------------------------*</font>
+  SELECT
+    A~BUDAT
+    B~GJAHR   " 회계연도
+    B~SAKNR   " G/L계정 (Recon)
+    SUM( B~DMBTR ) AS DMBTR "  통화금액 합계
+  INTO CORRESPONDING FIELDS OF TABLE GT_DATA
+  FROM ZEA_BKPF AS A        " A: 전표 헤더
+ INNER JOIN ZEA_BSEG AS B   " B: 전표 아이템
+    ON A~BUKRS EQ B~BUKRS
+   AND A~BELNR EQ B~BELNR
+   AND A~GJAHR EQ B~GJAHR
+ INNER JOIN ZEA_SKB1 AS C   " C: G/L계정마스터
+    ON C~BUKRS EQ A~BUKRS
+   AND C~SAKNR EQ B~SAKNR
+   AND C~GLTXT EQ C~GLTXT
+   AND C~XBILK NE 'X'       " G/L코드 Type - 'X': 대차대조 / '' : 손익계산
+    GROUP BY A~BUDAT B~GJAHR B~SAKNR.
+
+
+<font color ="#0000FF">*"---------------------------------------------------------------------*</font>
+<font color ="#0000FF">* 계산</font>
+<font color ="#0000FF">* -- 1. 매출/ 매출원가 ------------------------------------------------*</font>
+  CLEAR: GS_DATA.
+
+  " 매출 계정 (4*)
+  LOOP AT GT_DATA INTO GS_DATA WHERE SAKNR IN R_SAKNR_4.
+    DMBTR_4 = DMBTR_4 + GS_DATA-DMBTR. " 계정별 누적합
+  ENDLOOP.
+
+  " 매출원가 계정 (5*)
+  CLEAR GS_DATA.
+  LOOP AT GT_DATA INTO GS_DATA WHERE SAKNR IN R_SAKNR_5.
+    DMBTR_5 = DMBTR_5 + GS_DATA-DMBTR. " 계정별 누적합
+  ENDLOOP.
+
+<font color ="#0000FF">* -- 2. 매출총이익 = 매출 - 매출원가 ----------------------------------*</font>
+  DMBTR_A = DMBTR_4 - DMBTR_5.
+
+<font color ="#0000FF">* -- 3. 판관비 --------------------------------------------------------*</font>
+  CLEAR GS_DATA.
+  LOOP AT GT_DATA INTO GS_DATA WHERE SAKNR IN R_SAKNR_6.
+    DMBTR_6 = DMBTR_6 + GS_DATA-DMBTR. " 계정별 누적합
+  ENDLOOP.
+
+<font color ="#0000FF">* -- 4. 영업이익 = 매출총이익 - 판관비 --------------------------------*</font>
+  DMBTR_B = DMBTR_A - DMBTR_6.
+
+<font color ="#0000FF">* -- 5. 영업외이익 / 손실 ---------------------------------------------*</font>
+  CLEAR GS_DATA.
+  LOOP AT GT_DATA INTO GS_DATA WHERE SAKNR IN R_SAKNR_7P.
+    DMBTR_7P = DMBTR_7P + GS_DATA-DMBTR. " 계정별 누적합
+  ENDLOOP.
+
+  CLEAR GS_DATA.
+  LOOP AT GT_DATA INTO GS_DATA WHERE SAKNR IN R_SAKNR_7L.
+    DMBTR_7L = DMBTR_7L + GS_DATA-DMBTR. " 계정별 누적합
+  ENDLOOP.
+
+<font color ="#0000FF">* -- 6. 당기순이익 = 영업이익 + 영업외이익 - 영업외비용 ---------------*</font>
+  DMBTR_C = DMBTR_B + DMBTR_7P - DMBTR_7L.
+
+
+<font color ="#0000FF">*"----------------------------------------------------------------------</font>
+<font color ="#0000FF">*                        당기순이익 Exporting</font>
+<font color ="#0000FF">*"----------------------------------------------------------------------</font>
+  EV_INCOME = DMBTR_C.
+
+ENDFUNCTION.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_FI050_TCURR_CLS</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZEA_FI050_TCURR_CLS</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include ZEA_FI050_TCURR_CLS</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          ZEA_FI050_TCURR_CLS</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+CLASS  LCL_EVENT_HANDLER DEFINITION.
+
+  PUBLIC SECTION.
+    CLASS-METHODS:
+
+      DOUBLE_CLICK FOR EVENT DOUBLE_CLICK OF CL_GUI_ALV_GRID
+        IMPORTING E_COLUMN E_ROW ,
+
+      ON_HOTSPOT_CLICK FOR EVENT HOTSPOT_CLICK OF CL_GUI_ALV_GRID
+        IMPORTING E_ROW_ID      " LVC_S_ROW  (ROWTYPE, INDEX)
+                  E_COLUMN_ID   " LVC_S_COL  (FIELDNAME)
+                  ES_ROW_NO     " LVC_S_ROID (ROW_ID)
+                  SENDER.
+
+
+ENDCLASS.
+
+CLASS LCL_EVENT_HANDLER IMPLEMENTATION.
+
+  METHOD DOUBLE_CLICK.
+    PERFORM CALCULATION_UKURS USING E_COLUMN E_ROW .
+  ENDMETHOD.
+
+
+  METHOD ON_HOTSPOT_CLICK.
+
+  ENDMETHOD.
+
+
+ENDCLASS.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

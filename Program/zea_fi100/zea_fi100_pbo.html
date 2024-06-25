@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_FI100_PBO</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZEA_FI100_PBO</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  PBO</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          ZEA_TR_TEM_PBO</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0100 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0100 OUTPUT.
+  SET PF-STATUS 'S0100'.
+  SET TITLEBAR  'T0100'.
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module SET_FCAT OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE SET_FCAT OUTPUT.
+
+<font color ="#0000FF">*-- Filed Catalog 설정</font>
+
+  PERFORM MAKE_FILED_CATALOG.
+
+<font color ="#0000FF">*-- Tree 값 설정</font>
+
+  PERFORM SET_SORT TABLES GT_SORT.
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module CREATE_OBJECT OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&    왼쪽 컨테이너 생성</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE CREATE_OBJECT OUTPUT.
+
+<font color ="#0000FF">*---- 자산 Container</font>
+  IF GCL_CONTAINER IS NOT BOUND.
+
+    PERFORM CREATE_OBJECT_1.
+    PERFORM SET_HANDLER_TREE.
+
+  ENDIF.
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&   오른쪽 컨테이너 생성</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+<font color ="#0000FF">*---- 부채/자본 Container</font>
+  IF GCL_CONTAINER_2  IS INITIAL.
+
+<font color ="#0000FF">*-- CREATE</font>
+    PERFORM CREATE_OBJECT_RIGHT.  "Container 생성
+    PERFORM CREATE_SPLIT.         "Split     생성
+    PERFORM CREATE_TREE.          "Tree     생성
+
+<font color ="#0000FF">*-- SET FCAT & SORT</font>
+    PERFORM SET_FACT_2.
+    PERFORM SET_SORT TABLES GT_SORT2.
+    PERFORM SET_SORT TABLES GT_SORT3.
+
+<font color ="#0000FF">*-- DISPLYA</font>
+    PERFORM DISPLAY_TREE.         "ALV Tree   Display
+
+    PERFORM SET_HANDLER_TREE2.
+    PERFORM SET_HANDLER_TREE3.
+
+  ENDIF.
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module CLEAR_OK_CODE OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE CLEAR_OK_CODE OUTPUT.
+  CLEAR OK_CODE.
+ENDMODULE.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

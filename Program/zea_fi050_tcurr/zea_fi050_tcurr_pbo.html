@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_FI050_TCURR_PBO</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZEA_FI050_TCURR_PBO</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include ZEA_FI050_TUCRR_PBO</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          ZEA_FI050_TUCRR_PBO</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0100 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0100 OUTPUT.
+  SET PF-STATUS 'S0100'.
+  SET TITLEBAR 'T0100'. " [FI] 환율 레포트
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module INIT_0100 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE INIT_ALV_0100 OUTPUT.
+
+  IF CCON1 IS INITIAL AND CCON2 IS INITIAL.
+    PERFORM CREATE_OBJECT_O100.
+    PERFORM SET_ALV_LAYOUT_0100.
+    PERFORM SET_ALV_FIELDCAT_0100.
+    PERFORM SET_ALV_EVENT_0100.
+    PERFORM DISPLAY_ALV_0100.
+  ENDIF.
+
+
+<font color ="#0000FF">*&-- INIT_DATA --------------------------------------------------------*</font>
+  " PARMETER 값 전달
+  ZEA_TCURR-TCURR = PA_TCURR.
+
+<font color ="#0000FF">*&-- 그래프 구현  -----------------------------------------------------*</font>
+
+  DATA:
+    LV_COUNTER    TYPE STRING,
+    LV_FIELD_NAME TYPE FIELDNAME,
+    LV_LAST_INDEX TYPE I.
+  LV_COUNTER = 1. " 초기값 설정
+
+  LOOP AT GT_TCURR ASSIGNING FIELD-SYMBOL(&lt;FS_TCURR&gt;).
+<font color ="#0000FF">*    CLEAR GRVALWA1. " --&gt; 알 수 있는 점 : 가장 마지막 줄의 정보가 그래프에 나온다. 따라서 CLEAR하지 않는다.</font>
+
+    GRVALWA1-ROWTXT = &lt;FS_TCURR&gt;-TCURR. " 변경통화
+    GRVALWA2-ROWTXT = 'AVG'.            " 평균환율
+
+    " -- 아래에서는 'GRVALWA1-VAL+숫자'를 생성한다.
+    CONCATENATE 'GRVALWA1-VAL' LV_COUNTER INTO LV_FIELD_NAME. " 필드 이름 생성
+    ASSIGN (LV_FIELD_NAME) TO FIELD-SYMBOL(&lt;FS_FIELD&gt;). " 필드 기호로 접근
+
+    IF SY-SUBRC = 0.
+      &lt;FS_FIELD&gt; = &lt;FS_TCURR&gt;-UKURS.   " 필드 기호를 통한 환율 값 할당
+    ENDIF.
+
+    " -- 아래에서는 'GRVALWA1-VAL+숫자'를 생성한다.
+    CONCATENATE 'GRVALWA2-VAL' LV_COUNTER INTO LV_FIELD_NAME. " 필드 이름 생성
+    ASSIGN (LV_FIELD_NAME) TO FIELD-SYMBOL(&lt;FS_FIELD2&gt;). " 필드 기호로 접근
+
+    IF SY-SUBRC = 0.
+      &lt;FS_FIELD2&gt; = &lt;FS_TCURR&gt;-AVERAGE. " 필드 기호를 통한 평균환율 값 할당
+    ENDIF.
+
+    APPEND GRVALWA1 TO GRVAL1.
+    APPEND GRVALWA2 TO GRVAL1.
+    APPEND &lt;FS_TCURR&gt;-GDATU TO COL1_TEXTS.   " 효력 시작일을 COLUMN_TEXTS에 추가
+    LV_COUNTER = LV_COUNTER + 1. " 카운터 값 증가
+  ENDLOOP.
+
+
+<font color ="#0000FF">*Function module to display graph (ALV Cont 1)</font>
+  CALL FUNCTION 'GFW_PRES_SHOW_MULT'
+    EXPORTING
+      WIDTH             = 100
+      PARENT            = CCON2
+      PRESENTATION_TYPE = GFW_PRESTYPE_LINES
+      SHOW              = GFW_TRUE
+      X_AXIS_TITLE      = '한국수출입은행 고시환율'                " See GFW_PRES_SHOW
+    TABLES
+      VALUES            = GRVAL1
+      COLUMN_TEXTS      = COL1_TEXTS
+    EXCEPTIONS
+      ERROR_OCCURRED    = 1.
+
+
+<font color ="#0000FF">** [ PRESENTATION_TYPE ]</font>
+<font color ="#0000FF">**꺾은선형 차트 - gfw_prestype_lines</font>
+<font color ="#0000FF">**면적 차트 -  gfw_prestype_area</font>
+<font color ="#0000FF">**수평 막대 차트 - gfw_prestype_horizontal_bars</font>
+<font color ="#0000FF">**수직 막대 차트 - gfw_prestype_vertical_bars</font>
+<font color ="#0000FF">**원형 차트 - gfw_prestype_pie_chart</font>
+<font color ="#0000FF">**시간축 차트. - gfw_prestype_time_axis</font>
+
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module STATUS_0150 OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE STATUS_0150 OUTPUT.
+  SET PF-STATUS 'S0150'.
+  SET TITLEBAR 'T0150'. " 환율 계산
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Module CLEAR_OK_CODE OUTPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+MODULE CLEAR_OK_CODE OUTPUT.
+  CLEAR OK_CODE.
+ENDMODULE.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_FI020_PAI</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZEA_FI020_PAI</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include ZALV_GRID_DISPLAY_PAI</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          ZALV_GRID_DISPLAY_PAI</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&      Module  EXIT_0100  INPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*       text</font>
+<font color ="#0000FF">*----------------------------------------------------------------------*</font>
+MODULE EXIT_0100 INPUT.
+
+  CASE OK_CODE.
+    WHEN 'EXIT'.
+      LEAVE PROGRAM.
+    WHEN 'CANC'.
+      LEAVE TO SCREEN 0.
+    WHEN OTHERS.
+  ENDCASE.
+
+ENDMODULE.
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*&      Module  USER_COMMAND_0100  INPUT</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*       text</font>
+<font color ="#0000FF">*----------------------------------------------------------------------*</font>
+MODULE USER_COMMAND_0100 INPUT.
+
+  CASE OK_CODE.
+    WHEN 'BACK'.
+      LEAVE TO SCREEN 0.
+    WHEN 'SAVE'.
+
+    WHEN 'DISPLAY_D'. "고객 관련 전표
+      PERFORM DISPLAY_D.
+      PERFORM REFRESH_ALV_0100.
+      PERFORM LINE_MESSAGE.
+
+    WHEN 'DISPLAY_K'. "공급사 관련 전표
+      PERFORM DISPLAY_K.
+      PERFORM REFRESH_ALV_0100.
+      PERFORM LINE_MESSAGE.
+
+
+    WHEN 'DISPLAY_W'. "재고 관련 전표
+      PERFORM DISPLAY_W.
+      PERFORM REFRESH_ALV_0100.
+      PERFORM LINE_MESSAGE.
+
+
+    WHEN 'DISPLAY_S'. "일반 전표
+      PERFORM DISPLAY_S.
+      PERFORM REFRESH_ALV_0100.
+      PERFORM LINE_MESSAGE.
+
+
+    WHEN 'NO_FILT'. "고객관련 전표
+      PERFORM NO_FILTER.
+      PERFORM REFRESH_ALV_0100.
+      PERFORM LINE_MESSAGE.
+
+
+    WHEN 'CALL_CREAT'. "전표 생성 프로그램 호출
+      SUBMIT ZEA_FI030 AND RETURN.
+
+  ENDCASE.
+
+ENDMODULE.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

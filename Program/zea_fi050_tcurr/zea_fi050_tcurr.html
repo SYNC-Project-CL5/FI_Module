@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_FI050_TCURR</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZEA_FI050_TCURR</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  [FI] 환율 조회 및 환차 손익 산출 프로그램</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Report ZEA_FI050_TUCRR</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& [FI] 환율 Reporting</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+REPORT ZEA_FI050_TCURR MESSAGE-ID ZEA_MSG.
+
+include <a href ="zea_fi050_tcurr_top.html">ZEA_FI050_TCURR_TOP</a>.
+include <a href ="zea_fi050_tcurr_scr.html">ZEA_FI050_TCURR_SCR</a>.
+include <a href ="zea_fi050_tcurr_cls.html">ZEA_FI050_TCURR_CLS</a>.
+
+include <a href ="zea_fi050_tcurr_pbo.html">ZEA_FI050_TCURR_PBO</a>.
+include <a href ="zea_fi050_tcurr_pai.html">ZEA_FI050_TCURR_PAI</a>.
+include <a href ="zea_fi050_tcurr_f01.html">ZEA_FI050_TCURR_F01</a>.
+
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+INITIALIZATION.
+
+AT SELECTION-SCREEN OUTPUT.
+
+AT SELECTION-SCREEN.
+  PERFORM INPUT_CHECK.
+
+START-OF-SELECTION.
+  PERFORM SELECT_DATA.
+  PERFORM MAKE_DISPLAY_DATA.
+  PERFORM DISPLAY_DATA.
+
+<font color ="#0000FF">*GUI Texts</font>
+<font color ="#0000FF">*----------------------------------------------------------</font>
+<font color ="#0000FF">* T0100 --&gt; [FI] 환율 레포트</font>
+<font color ="#0000FF">* T0150 --&gt; 환율 계산</font>
+
+<font color ="#0000FF">*Text elements</font>
+<font color ="#0000FF">*----------------------------------------------------------</font>
+<font color ="#0000FF">* F01 평균대비</font>
+<font color ="#0000FF">* F02 기준통화</font>
+<font color ="#0000FF">* F03 변경통화</font>
+<font color ="#0000FF">* F04 효력시작일</font>
+<font color ="#0000FF">* F05 환율</font>
+<font color ="#0000FF">* F06 평균환율</font>
+<font color ="#0000FF">* T01 검색 조건</font>
+<font color ="#0000FF">* T02 조회 기간</font>
+
+
+<font color ="#0000FF">*Selection texts</font>
+<font color ="#0000FF">*----------------------------------------------------------</font>
+<font color ="#0000FF">* PA_TCURR         조회 통화</font>
+<font color ="#0000FF">* RA_1         7일 이내</font>
+<font color ="#0000FF">* RA_2         15일 이내</font>
+<font color ="#0000FF">* RA_3         30일 이내</font>
+<font color ="#0000FF">* RA_4         전체기간 조회</font>
+<font color ="#0000FF">* SO_GDATU         조회 기간</font>
+
+
+<font color ="#0000FF">*Messages</font>
+<font color ="#0000FF">*----------------------------------------------------------</font>
+<font color ="#0000FF">*</font>
+<font color ="#0000FF">* Message class: ZEA_MSG</font>
+<font color ="#0000FF">*006   & 건의 데이터가 검색되었습니다.</font>
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>

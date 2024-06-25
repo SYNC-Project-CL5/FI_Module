@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>ZEA_FI070_COPY_SCR</title>
+</head>
+<body bgcolor="#FFFFE0">
+<font size="3" face = "Arial" color="#000000"><b>Code listing for: ZEA_FI070_COPY_SCR</b></font>
+<br>
+<font size="3" face = "Arial" color="#000000"><b>Description:  Include ZMEETROOMS01</b></font>
+<hr>
+<pre width="100">
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+<font color ="#0000FF">*& Include          ZEA_OPEN_MANG_SCR</font>
+<font color ="#0000FF">*&---------------------------------------------------------------------*</font>
+
+SELECTION-SCREEN SKIP 1.
+
+" T01 : 공급업체 검색조건
+SELECTION-SCREEN BEGIN OF BLOCK B01 WITH FRAME TITLE TEXT-T01.
+
+  SELECT-OPTIONS : SO_VENCO FOR ZEA_LFA1-VENCODE,
+                   SO_COCO  FOR ZEA_FIT800-BUKRS
+                   NO-EXTENSION
+                   NO INTERVALS DEFAULT '1000'.
+SELECTION-SCREEN END OF BLOCK B01.
+
+SELECTION-SCREEN SKIP 1.
+
+                                   " T02 : Line item 검색조건
+SELECTION-SCREEN BEGIN OF BLOCK B02 WITH FRAME TITLE TEXT-T02.
+
+    SELECTION-SCREEN SKIP 1.
+                                          " T03 : 반제 여부 선택
+  SELECTION-SCREEN BEGIN OF BLOCK B03 WITH FRAME TITLE TEXT-T03.
+
+    PARAMETERS RAD_OPEN RADIOBUTTON GROUP RAG1. "미결 아이템
+    SELECT-OPTIONS OPEN_DAT FOR ZEA_FIT800-BUDAT NO-EXTENSION
+                                                 NO INTERVALS.
+    PARAMETERS RAD_CLEA RADIOBUTTON GROUP RAG1.  "반제 아이템
+    SELECT-OPTIONS SO_C_DAT FOR ZEA_FIT800-BUDAT.
+
+    PARAMETERS RAD_ALL RADIOBUTTON GROUP RAG1 DEFAULT 'X'. "All items
+    SELECT-OPTIONS SO_RESDT FOR ZEA_FIT800-BUDAT.
+
+  SELECTION-SCREEN END OF BLOCK B03.
+SELECTION-SCREEN END OF BLOCK B02.
+</pre>
+<hr>
+<font size="2" face = "Sans Serif">Extracted by Direct Download Enterprise version 1.3.1 - E.G.Mellodew. 1998-2005 UK. Sap Release 754
+</font>
+</body>
+</html>
